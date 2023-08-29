@@ -1,5 +1,6 @@
-import { EmailValidator, SignUpController } from './signup'
+import { SignUpController } from './signup'
 import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
+import { EmailValidator, Controller } from '../../protocols'
 
 class EmailValidatorStub implements EmailValidator {
   isValid (email: string): boolean {
@@ -12,7 +13,7 @@ const makeEmailValidatorStub = (): EmailValidator => {
 }
 
 interface SutTypes {
-  sut: SignUpController
+  sut: Controller
   emailValidatorAdapter: EmailValidator
 }
 
