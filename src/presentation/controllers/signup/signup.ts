@@ -1,7 +1,6 @@
 import { InvalidParamError } from '../../errors/invalid-param-error'
-import { HttpRequest, HttpResponse, badRequest } from '../../helpers/http-helper'
+import { HttpRequest, HttpResponse, badRequest, serverError } from '../../helpers/http-helper'
 import { Controller } from '../../protocols/controller'
-import { ServerError } from '../../errors/server-error'
 
 export interface EmailValidator {
   isValid (email: string): boolean
@@ -33,10 +32,9 @@ export class SignUpController implements Controller {
         return badRequest(new InvalidParamError('email'))
       }
     } catch (error) {
-      console.log(error)
       return {
         statusCode: 500,
-        body: new ServerError()
+        body: serverError()
       }
     }
   }
