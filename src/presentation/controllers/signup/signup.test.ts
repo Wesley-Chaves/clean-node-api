@@ -2,13 +2,23 @@ import { SignUpController } from './signup'
 import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
 import { EmailValidator, Controller } from '../../protocols'
 
-class EmailValidatorStub implements EmailValidator {
-  isValid (email: string): boolean {
-    return true
+const makeEmailValidatorStub = (): EmailValidator => {
+  class EmailValidatorStub implements EmailValidator {
+    isValid (email: string): boolean {
+      return true
+    }
   }
+
+  return new EmailValidatorStub()
 }
 
-const makeEmailValidatorStub = (): EmailValidator => {
+const makeEmailValidatorStubWithError = (): EmailValidator => {
+  class EmailValidatorStub implements EmailValidator {
+    isValid (email: string): boolean {
+      throw new Error()
+    }
+  }
+
   return new EmailValidatorStub()
 }
 
@@ -139,13 +149,7 @@ describe('SignUpController', () => {
   })
 
   test('Should return 500 if EmailValidator throws', () => {
-    class EmailValidatorStub implements EmailValidator {
-      isValid (email: string): boolean {
-        throw new Error()
-      }
-    }
-
-    const emailValidatorStub = new EmailValidatorStub()
+    const emailValidatorStub = makeEmailValidatorStubWithError()
 
     const sut = new SignUpController(emailValidatorStub)
     const httpRequest = {
