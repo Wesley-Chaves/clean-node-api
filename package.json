@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "lint-staged": "lint-staged",
-    "prepare": "husky install"
+    "test:staged": "jest",
+    "lint-staged": "lint-staged"
   },
   "keywords": [],
   "author": "",
