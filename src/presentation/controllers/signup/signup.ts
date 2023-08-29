@@ -1,3 +1,4 @@
+import { InvalidParamError } from '../../errors/invalid-param-error'
 import { HttpRequest, HttpResponse, badRequest } from '../../helpers/http-helper'
 import { Controller } from '../../protocols/controller'
 
@@ -12,7 +13,7 @@ export class SignUpController implements Controller {
 
     const { password, passwordConfirmation } = httpRequest.body
     if (password !== passwordConfirmation) {
-      return badRequest(new Error('Invalid param: passwordConfirmation'))
+      return badRequest(new InvalidParamError('passwordConfirmation'))
     }
   }
 }
