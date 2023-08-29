@@ -1,4 +1,5 @@
 import { EmailValidator, SignUpController } from './signup'
+import { ServerError } from '../../errors/server-error'
 
 class EmailValidatorStub implements EmailValidator {
   isValid (email: string): boolean {
@@ -134,5 +135,29 @@ describe('SignUpController', () => {
 
     const { email } = httpRequest.body
     expect(isValidSpy).toHaveBeenCalledWith(email)
+  })
+
+  test('Should return 500 if EmailValidator throws', () => {
+    class EmailValidatorStub implements EmailValidator {
+      isValid (email: string): boolean {
+        throw new Error()
+      }
+    }
+
+    const emailValidatorStub = new EmailValidatorStub()
+
+    const sut = new SignUpController(emailValidatorStub)
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'correct_email@mail',
+        password: 'correct_password',
+        passwordConfirmation: 'correct_password'
+      }
+    }
+
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
   })
 })
