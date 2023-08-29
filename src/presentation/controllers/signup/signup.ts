@@ -1,6 +1,7 @@
 import { InvalidParamError } from '../../errors/invalid-param-error'
 import { HttpRequest, HttpResponse, badRequest, serverError } from '../../helpers/http-helper'
 import { Controller } from '../../protocols/controller'
+import { MissingParamError } from '../../errors/missing-param-error'
 
 export interface EmailValidator {
   isValid (email: string): boolean
@@ -18,7 +19,7 @@ export class SignUpController implements Controller {
       const requiredFields = ['name', 'email', 'password', 'passwordConfirmation']
       for (const field of requiredFields) {
         if (!httpRequest.body[field]) {
-          return badRequest(new Error(`Missing param: ${field}`))
+          return badRequest(new MissingParamError(field))
         }
       }
 
