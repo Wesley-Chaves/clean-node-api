@@ -7,10 +7,10 @@ export interface EmailValidator {
 }
 
 export class SignUpController implements Controller {
-  private readonly emailValidatorAdapter: EmailValidator
+  private readonly emailValidator: EmailValidator
 
-  constructor (emailValidatorAdapter?: EmailValidator) {
-    this.emailValidatorAdapter = emailValidatorAdapter
+  constructor (emailValidatorAdapter: EmailValidator) {
+    this.emailValidator = emailValidatorAdapter
   }
 
   handle (httpRequest: HttpRequest): HttpResponse {
@@ -26,7 +26,7 @@ export class SignUpController implements Controller {
       return badRequest(new InvalidParamError('passwordConfirmation'))
     }
 
-    const isValid = this.emailValidatorAdapter.isValid(email)
+    const isValid = this.emailValidator.isValid(email)
     if (!isValid) {
       return badRequest(new InvalidParamError('email'))
     }
