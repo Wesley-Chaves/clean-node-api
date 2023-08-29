@@ -9,5 +9,10 @@ export class SignUpController implements Controller {
         return badRequest(new Error(`Missing param: ${field}`))
       }
     }
+
+    const { password, passwordConfirmation } = httpRequest.body
+    if (password !== passwordConfirmation) {
+      return badRequest(new Error('Invalid param: passwordConfirmation'))
+    }
   }
 }
