@@ -1,15 +1,5 @@
-export interface HttpRequest {
-  body?: any
-}
-
-export interface httpResponse {
-  statusCode: number
-  body: any
-}
-
-export interface Controller {
-  handle (httpRequest: HttpRequest): httpResponse
-}
+import { HttpRequest, httpResponse } from '../../helpers/http-helper'
+import { Controller } from '../../protocols/controller'
 
 export class SignUpController implements Controller {
   handle (httpRequest: HttpRequest): httpResponse {
