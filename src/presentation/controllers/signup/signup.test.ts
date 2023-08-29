@@ -12,28 +12,18 @@ const makeEmailValidatorStub = (): EmailValidator => {
   return new EmailValidatorStub()
 }
 
-const makeEmailValidatorStubWithError = (): EmailValidator => {
-  class EmailValidatorStub implements EmailValidator {
-    isValid (email: string): boolean {
-      throw new Error()
-    }
-  }
-
-  return new EmailValidatorStub()
-}
-
 interface SutTypes {
   sut: Controller
-  emailValidatorAdapter: EmailValidator
+  emailValidatorStub: EmailValidator
 }
 
 const makeSut = (): SutTypes => {
-  const emailValidatorAdapter = makeEmailValidatorStub()
-  const sut = new SignUpController(emailValidatorAdapter)
+  const emailValidatorStub = makeEmailValidatorStub()
+  const sut = new SignUpController(emailValidatorStub)
 
   return {
     sut,
-    emailValidatorAdapter
+    emailValidatorStub
   }
 }
 
@@ -110,9 +100,9 @@ describe('SignUpController', () => {
   })
 
   test('Should returns error with status code 400 if email is invalid', () => {
-    const { sut, emailValidatorAdapter } = makeSut()
+    const { sut, emailValidatorStub } = makeSut()
 
-    jest.spyOn(emailValidatorAdapter, 'isValid').mockReturnValueOnce(false)
+    jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
 
     const httpRequest = {
       body: {
@@ -129,9 +119,9 @@ describe('SignUpController', () => {
   })
 
   test('Should call EmailValidator with correct email', () => {
-    const { sut, emailValidatorAdapter } = makeSut()
+    const { sut, emailValidatorStub } = makeSut()
 
-    const isValidSpy = jest.spyOn(emailValidatorAdapter, 'isValid')
+    const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
 
     const httpRequest = {
       body: {
@@ -149,9 +139,10 @@ describe('SignUpController', () => {
   })
 
   test('Should return 500 if EmailValidator throws', () => {
-    const emailValidatorStub = makeEmailValidatorStubWithError()
-
-    const sut = new SignUpController(emailValidatorStub)
+    const { sut, emailValidatorStub } = makeSut()
+    jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
+      throw new Error()
+    })
     const httpRequest = {
       body: {
         name: 'any_name',
