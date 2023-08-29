@@ -1,5 +1,5 @@
 import { EmailValidator, SignUpController } from './signup'
-import { ServerError } from '../../errors/server-error'
+import { serverError } from '../../helpers/http-helper'
 
 class EmailValidatorStub implements EmailValidator {
   isValid (email: string): boolean {
@@ -158,6 +158,6 @@ describe('SignUpController', () => {
 
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(500)
-    expect(httpResponse.body).toEqual(new ServerError())
+    expect(httpResponse.body).toEqual(serverError())
   })
 })
