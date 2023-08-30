@@ -1,13 +1,5 @@
 import { ServerError } from '../errors/server-error'
-
-export interface HttpRequest {
-  body?: any
-}
-
-export interface HttpResponse {
-  statusCode: number
-  body: any
-}
+import { HttpResponse } from '../protocols'
 
 export const badRequest = (error: Error): HttpResponse => {
   return {
