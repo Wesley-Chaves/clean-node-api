@@ -1,6 +1,5 @@
-import { AddAccount } from '../../domain/usecases/add-account'
+import { HttpResponse, HttpRequest, Controller, EmailValidator, AddAccount } from './signup-protocols'
 import { InvalidParamError, MissingParamError } from '../../errors'
-import { Controller, EmailValidator, HttpResponse, HttpRequest } from '../../protocols'
 import { badRequest, serverError } from '../../helpers/http-helper'
 
 export class SignUpController implements Controller {
@@ -30,8 +29,8 @@ export class SignUpController implements Controller {
       if (!isValid) {
         return badRequest(new InvalidParamError('email'))
       }
-
       const account = {
+
         name,
         email,
         password
