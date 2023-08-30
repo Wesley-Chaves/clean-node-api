@@ -15,11 +15,12 @@ const makeEmailValidatorStub = (): EmailValidator => {
 const makeAddAccountStub = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     add (account: AddAccountModel): AccountModel {
+      const { name, email, password } = account
       return {
         id: 'valid_id',
-        name: 'valid_name',
-        email: 'valid_email@email.com',
-        password: 'valid_password'
+        name,
+        email,
+        password
       }
     }
   }
@@ -207,5 +208,27 @@ describe('SignUpController', () => {
     sut.handle(httpRequest)
     const { name, email, password } = httpRequest.body
     expect(addSpy).toHaveBeenCalledWith({ name, email, password })
+  })
+
+  test('Should return 200 if valid data is provided', () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      body: {
+        name: 'valid_name',
+        email: 'valid_email@mail.com',
+        password: 'valid_password',
+        passwordConfirmation: 'valid_password'
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(200)
+
+    const { name, email, password } = httpRequest.body
+    expect(httpResponse.body).toEqual({
+      id: 'valid_id',
+      name,
+      email,
+      password
+    })
   })
 })
