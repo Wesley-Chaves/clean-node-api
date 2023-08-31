@@ -19,7 +19,7 @@ const makeAddAccountRepository = (): AddAccountRepository => {
         id: 'valid_id',
         name: 'valid_name',
         email: 'valid_email',
-        password: 'hashed_password'
+        password: 'hashed_value'
       }
       return await new Promise((resolve) => { resolve(fakeAccount) })
     }
@@ -58,7 +58,7 @@ describe('DbAddAccount Usecase', () => {
 
     await sut.add(accountData)
 
-    expect(encryptSpy).toHaveBeenCalledWith(accountData.password)
+    expect(encryptSpy).toHaveBeenCalledWith('valid_password')
   })
 
   test('Should throw if Encrypter throws', async () => {
@@ -106,5 +106,23 @@ describe('DbAddAccount Usecase', () => {
 
     const promise = sut.add(account)
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should return an account on sucess', async () => {
+    const { sut } = makeSut()
+
+    const accountData = {
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'valid_password'
+    }
+
+    const account = await sut.add(accountData)
+    expect(account).toEqual({
+      id: 'valid_id',
+      name: 'valid_name',
+      email: 'valid_email',
+      password: 'hashed_value'
+    })
   })
 })
